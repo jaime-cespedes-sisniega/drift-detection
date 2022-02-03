@@ -16,7 +16,7 @@ api_router = APIRouter(tags=['API'])
 detector = None
 
 
-@api_router.post('/')
+@api_router.post('/detector')
 async def load_detector(detector_settings: DetectorSettings):
     global detector
     detector = load_detector_(settings=detector_settings)
