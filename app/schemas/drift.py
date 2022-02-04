@@ -39,7 +39,7 @@ class DriftResponse(BaseModel):
     threshold: float
     time: int
     ert: int
-    test_start: float
+    test_stat: float
 
 
 class NoFoundResponse(BaseModel):
