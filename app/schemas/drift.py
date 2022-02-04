@@ -31,7 +31,7 @@ class DetectorInput(BaseModel):
         arbitrary_types_allowed = True
 
 
-class DetectorResponse(BaseModel):
+class DriftResponse(BaseModel):
 
     is_drift: int
     distance: Union[None, float]
@@ -45,3 +45,12 @@ class DetectorResponse(BaseModel):
 class NoFoundResponse(BaseModel):
 
     msg: str
+
+
+class DetectorResponse(BaseModel):
+
+    name: str
+    detector_type: str
+    data_type: Union[None, str]
+    version: str
+    backend: str

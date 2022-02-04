@@ -5,6 +5,7 @@ from app.config import settings
 from app.schemas import (DetectorInput,
                          DetectorResponse,
                          DetectorSettings,
+                         DriftResponse,
                          NoFoundResponse)
 from app.utils import load_detector_, make_prediction
 from fastapi import APIRouter, status
@@ -16,20 +17,24 @@ api_router = APIRouter(tags=['API'])
 detector = None
 
 
-@api_router.post('/detector')
-async def load_detector(detector_settings: DetectorSettings):
+@api_router.post('/detector',
+                 response_model=DetectorResponse)
+async def load_detector(detector_settings: DetectorSettings) \
+        -> Dict[str, Union[str, None]]:
     """Load detector from MLflow
 
     :param detector_settings: detector settings
     :type detector_settings: DetectorSettings
-    :rtype: None
+    :return detector metadata
+    :rtype: Dict[str, Union[str, None]
     """
     global detector
     detector = load_detector_(settings=detector_settings)
+    return detector.meta
 
 
 @api_router.post('/drift',
-                 response_model=DetectorResponse,
+                 response_model=DriftResponse,
                  responses={
                      status.HTTP_404_NOT_FOUND: {'model': NoFoundResponse}
                  })
