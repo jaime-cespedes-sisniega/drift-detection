@@ -29,3 +29,19 @@ class DetectorInput(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
+
+class DetectorResponse(BaseModel):
+
+    is_drift: int
+    distance: Union[None, float]
+    p_val: Union[None, float]
+    threshold: float
+    time: int
+    ert: int
+    test_start: float
+
+
+class NoFoundResponse(BaseModel):
+
+    msg: str

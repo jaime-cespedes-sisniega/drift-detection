@@ -3,9 +3,12 @@ from typing import Dict, Union
 from app import schemas, __version__
 from app.config import settings
 from app.schemas import (DetectorInput,
-                         DetectorSettings)
+                         DetectorResponse,
+                         DetectorSettings,
+                         NoFoundResponse)
 from app.utils import load_detector_, make_prediction
-from fastapi import APIRouter
+from fastapi import APIRouter, status
+from fastapi.responses import JSONResponse
 
 
 api_router = APIRouter(tags=['API'])
@@ -25,7 +28,11 @@ async def load_detector(detector_settings: DetectorSettings):
     detector = load_detector_(settings=detector_settings)
 
 
-@api_router.post('/drift')
+@api_router.post('/drift',
+                 response_model=DetectorResponse,
+                 responses={
+                     status.HTTP_404_NOT_FOUND: {'model': NoFoundResponse}
+                 })
 async def check_drift(input_: DetectorInput) \
         -> Dict[str, Union[int, float, None]]:
     """Check if drift is present
@@ -35,6 +42,10 @@ async def check_drift(input_: DetectorInput) \
     :return: drift data information
     :rtype: Dict[str, Union[int, float, None]]
     """
+    if detector is None:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
+                            content={'msg': 'No detector was found to be used'})
+
     drift = make_prediction(values=input_.values,
                             detector=detector)
     return drift['data']

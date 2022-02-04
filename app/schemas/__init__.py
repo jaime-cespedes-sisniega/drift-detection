@@ -1,7 +1,11 @@
 from .drift import (DetectorInput,
-                    DetectorSettings)
+                    DetectorResponse,
+                    DetectorSettings,
+                    NoFoundResponse)
 from .health import Health
 
 __all__ = ['DetectorSettings',
+           'DetectorResponse',
            'DetectorInput',
+           'NoFoundResponse',
            'Health']
