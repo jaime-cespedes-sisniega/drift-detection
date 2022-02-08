@@ -7,7 +7,9 @@ from app.schemas import (DetectorInput,
                          DetectorSettings,
                          DriftResponse,
                          NoFoundResponse)
-from app.utils import load_detector_, make_prediction
+from app.utils import (load_detector_,
+                       log_metrics,
+                       make_prediction)
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 
@@ -53,7 +55,10 @@ async def check_drift(input_: DetectorInput) \
 
     drift = make_prediction(values=input_.values,
                             detector=detector)
-    return drift['data']
+
+    log_metrics(drift=drift)
+
+    return drift
 
 
 @api_router.get('/health',

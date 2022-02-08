@@ -14,4 +14,11 @@ tox:
 	$(VENV)/bin/tox
 
 serve-dev:
-	uvicorn app.main:app --host 0.0.0.0 --port 5001 --workers 1
+	mkdir .multiproc
+	export PROMETHEUS_MULTIPROC_DIR="${CURDIR}/.multiproc/"
+	uvicorn app.main:app --host 0.0.0.0 --port 5001 --workers 5
+
+serve-prod:
+	mkdir .multiproc
+	export PROMETHEUS_MULTIPROC_DIR="${CURDIR}/.multiproc/"
+	gunicorn -b 0.0.0.0:5001 -w 5 -t 120 -c gunicorn_conf.py -k uvicorn.workers.UvicornWorker app.main:app

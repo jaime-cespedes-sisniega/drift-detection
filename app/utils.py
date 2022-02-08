@@ -2,9 +2,13 @@ import os
 from pathlib import Path
 import pickle
 import tempfile
+from typing import (Dict,
+                    List,
+                    Union)
 
 import alibi_detect.cd
 from app.schemas import DetectorSettings
+from app.metrics import gauge_drift
 from mlflow.tracking import MlflowClient
 import numpy as np
 
@@ -104,4 +108,18 @@ def make_prediction(values: np.ndarray,
     """
     drift = detector.predict(values,
                              return_test_stat=True)
-    return drift
+    return drift['data']
+
+
+def log_metrics(drift: List[Dict[str,
+                                 Union[None, str, int, float]]]) \
+        -> None:
+    """Log metrics to /metrics endpoint
+
+    :param drift: drift metrics to log
+    :type drift: List[Dict[str, Union[None, str, int, float]]]
+    :rtype: None
+    """
+    gauge_drift['drift_flag'].set(drift['is_drift'])
+    gauge_drift['threshold'].set(drift['threshold'])
+    gauge_drift['test_stat'].set(drift['test_stat'])
