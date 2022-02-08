@@ -7,8 +7,8 @@ from typing import (Dict,
                     Union)
 
 import alibi_detect.cd
-from app.schemas import DetectorSettings
 from app.metrics import gauge_drift
+from app.schemas import DetectorSettings
 from mlflow.tracking import MlflowClient
 import numpy as np
 
