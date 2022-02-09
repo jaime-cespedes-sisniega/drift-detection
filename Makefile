@@ -22,3 +22,10 @@ serve-prod:
 	mkdir .multiproc
 	export PROMETHEUS_MULTIPROC_DIR="${CURDIR}/.multiproc/"
 	gunicorn -b 0.0.0.0:5001 -w 5 -t 120 -c gunicorn_conf.py -k uvicorn.workers.UvicornWorker app.main:app
+
+build:
+	docker build -t drift-detection .
+
+run:
+	docker run -d --name drift-detection -p 5001:5001 -e NUM_WORKERS=5 -e TIMEOUT=120 \
+    drift-detection
