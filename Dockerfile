@@ -22,8 +22,8 @@ COPY ./gunicorn_conf.py .
 USER api-user
 
 # Default env variables
-ENV NUM_WORKERS 1
 ENV TIMEOUT 120
 ENV PROMETHEUS_MULTIPROC_DIR ".multiproc"
 
-CMD ["sh", "-c", "gunicorn -b 0.0.0.0:5001 -w ${NUM_WORKERS} -t ${TIMEOUT} -c gunicorn_conf.py -k uvicorn.workers.UvicornWorker app.main:app"]
+# XXX: Number of workers is forced to be 1, otherwise N-1 workers will not be initialized with the detector when /detector endpoint is called
+CMD ["sh", "-c", "gunicorn -b 0.0.0.0:5001 -w 1 -t ${TIMEOUT} -c gunicorn_conf.py -k uvicorn.workers.UvicornWorker app.main:app"]
